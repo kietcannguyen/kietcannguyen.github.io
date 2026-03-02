@@ -425,7 +425,7 @@
         var isPinnedOpen = false;
         entry.bindPopup(detailsHtml, {
           className: "family-route-popup",
-          autoPan: true,
+          autoPan: false,
           closeButton: true
         });
 
