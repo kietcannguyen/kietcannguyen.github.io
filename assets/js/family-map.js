@@ -419,20 +419,35 @@
     }
 
     layers.forEach(function (entry) {
-      if (typeof entry.bindTooltip === "function") {
-        entry.bindTooltip(detailsHtml, {
-          sticky: true,
-          direction: "top",
-          opacity: 0.98,
-          className: "family-route-tooltip"
-        });
-      }
-
       if (typeof entry.bindPopup === "function") {
+        var isPinnedOpen = false;
         entry.bindPopup(detailsHtml, {
           className: "family-route-popup",
           autoPan: true,
           closeButton: true
+        });
+
+        entry.on("mouseover", function () {
+          if (typeof entry.openPopup === "function" && !entry.isPopupOpen()) {
+            entry.openPopup();
+          }
+        });
+
+        entry.on("mouseout", function () {
+          if (!isPinnedOpen && typeof entry.closePopup === "function" && entry.isPopupOpen()) {
+            entry.closePopup();
+          }
+        });
+
+        entry.on("click", function () {
+          isPinnedOpen = true;
+          if (typeof entry.openPopup === "function" && !entry.isPopupOpen()) {
+            entry.openPopup();
+          }
+        });
+
+        entry.on("popupclose", function () {
+          isPinnedOpen = false;
         });
       }
     });
