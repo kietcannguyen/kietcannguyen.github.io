@@ -2,25 +2,22 @@
   <data class="u-url" href="{{ "/" | relative_url }}"></data>
 
   <div class="wrapper">
-    
     <div class="footer-col-wrapper">
       <div class="footer-col">
-        
-      {%- if site.author %}
-        <div class="footer-col">
-          <p>{{ "Goodbye Vietnam 1975 Written by An Nguyen" | escape }}</p>
-        </div>
-        
-        <ul class="contact-list">
-          {% if site.author.name -%}
-            <li class="p-name">{{ site.author.name | escape }}</li>
-          {% endif -%}
-          {% if site.author.email -%}
-            <li><a class="u-email" href="mailto:{{ site.author.email }}">{{ site.author.email }}</a></li>
-            <li><a class="u-email" href="mailto:{{ hieucannguyen1@gmail.com }}">{{ "hieucannguyen1@gmail.com" }}</a></li>
-          {%- endif %}
-        </ul>
-      {%- endif %}
+        {%- if site.author -%}
+          <p>{{ "Goodbye Vietnam 1975" | escape }}</p>
+          <ul class="contact-list">
+            {%- if site.author.name -%}
+              <li class="p-name">Author: {{ site.author.name | escape }}</li>
+            {%- endif -%}
+            {%- if site.author.email -%}
+              <li><a class="u-email" href="mailto:{{ site.author.email }}">{{ site.author.email }}</a></li>
+            {%- endif -%}
+            {%- if site.developers -%}
+              <li>Developers: {{ site.developers | join: ", " | escape }}</li>
+            {%- endif %}
+          </ul>
+        {%- endif %}
       </div>
       <div class="footer-col">
         <p>{{ site.description | escape }}</p>

@@ -1,8 +1,10 @@
 title: Goodbye Vietnam 1975
 author:
-  name: Kiet Nguyen    |
-        Hieu Nguyen
-  email: kietcannguyen@gmail.com
+  name: An Nguyen
+  email: anguyen8765@yahoo.com
+developers:
+  - Hieu Nguyen
+  - Kiet Nguyen
 
 
 # The `>` after `description:` means to ignore line-breaks until next key.
