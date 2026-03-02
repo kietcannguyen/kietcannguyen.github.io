@@ -2,7 +2,7 @@
   "use strict";
 
   var DEFAULT_ROUTE_COLOR = "#6b5b4a";
-  var DEFAULT_CENTER = [20, 0];
+  var DEFAULT_CENTER = [20, 180];
   var DEFAULT_ZOOM = 2;
   var MAP_ELEMENT_ID = "family-map";
   var LEGEND_ELEMENT_ID = "family-map-legend";
@@ -16,7 +16,7 @@
   }
 
   function normalizeLng(lng) {
-    return ((((lng + 180) % 360) + 360) % 360) - 180;
+    return (((lng % 360) + 360) % 360);
   }
 
   function shortestLngPath(fromLng, toLng) {
@@ -398,7 +398,7 @@
 
     var map = L.map(MAP_ELEMENT_ID, {
       zoomControl: true,
-      maxBounds: [[-85, -180], [85, 180]],
+      maxBounds: [[-85, 0], [85, 360]],
       maxBoundsViscosity: 1.0,
       worldCopyJump: false
     }).setView(DEFAULT_CENTER, DEFAULT_ZOOM);
@@ -407,8 +407,6 @@
       subdomains: "abcd",
       maxZoom: 18,
       minZoom: 2,
-      noWrap: true,
-      bounds: [[-85, -180], [85, 180]],
       attribution:
         "&copy; <a href=\"https://www.openstreetmap.org/copyright\">OpenStreetMap</a> " +
         "contributors &copy; <a href=\"https://carto.com/attributions\">CARTO</a>"
