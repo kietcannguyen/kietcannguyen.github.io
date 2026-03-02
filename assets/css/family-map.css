@@ -182,6 +182,10 @@
   border: 1px solid #b9ab8e;
   border-radius: 4px;
   box-shadow: 0 3px 8px rgba(52, 40, 24, 0.18);
+  max-width: 320px;
+  white-space: normal;
+  overflow-wrap: anywhere;
+  word-break: break-word;
 }
 
 .leaflet-popup.family-route-popup .leaflet-popup-content-wrapper {
