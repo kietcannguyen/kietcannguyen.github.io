@@ -284,28 +284,22 @@
       return;
     }
 
-    var prev = finalSegment[finalSegment.length - 2];
-    var tip = finalSegment[finalSegment.length - 1];
-    var x1 = prev[1];
-    var y1 = prev[0];
-    var x2 = tip[1];
-    var y2 = tip[0];
+    var prev = L.latLng(finalSegment[finalSegment.length - 2]);
+    var tip = L.latLng(finalSegment[finalSegment.length - 1]);
+    var prevPx = map.latLngToLayerPoint(prev);
+    var tipPx = map.latLngToLayerPoint(tip);
+    var angleDeg = Math.atan2(tipPx.y - prevPx.y, tipPx.x - prevPx.x) * (180 / Math.PI);
 
-    var angle = Math.atan2(y2 - y1, x2 - x1);
-    var segmentLen = Math.sqrt(Math.pow(x2 - x1, 2) + Math.pow(y2 - y1, 2));
-    var wingLen = clamp(segmentLen * 4.5, 0.75, 1.75);
-    var spread = 0.48;
+    var arrowHtml = "<span class=\"family-route-arrow\" style=\"border-left-color:" +
+      escapeHtml(color) + "; transform: rotate(" + angleDeg.toFixed(2) + "deg);\"></span>";
 
-    var wing1Angle = angle + Math.PI - spread;
-    var wing2Angle = angle + Math.PI + spread;
-    var wing1 = [y2 + wingLen * Math.sin(wing1Angle), x2 + wingLen * Math.cos(wing1Angle)];
-    var wing2 = [y2 + wingLen * Math.sin(wing2Angle), x2 + wingLen * Math.cos(wing2Angle)];
-
-    L.polygon([tip, wing1, wing2], {
-      color: color,
-      weight: 1,
-      fillColor: color,
-      fillOpacity: 0.92,
+    L.marker(tip, {
+      icon: L.divIcon({
+        className: "family-route-arrow-wrapper",
+        html: arrowHtml,
+        iconSize: [16, 16],
+        iconAnchor: [8, 8]
+      }),
       interactive: false
     }).addTo(map);
   }
@@ -399,14 +393,7 @@
     }
 
     var map = L.map(MAP_ELEMENT_ID, {
-      zoomControl: false,
-      dragging: false,
-      scrollWheelZoom: false,
-      doubleClickZoom: false,
-      boxZoom: false,
-      keyboard: false,
-      touchZoom: false,
-      tap: false,
+      zoomControl: true,
       worldCopyJump: false
     }).setView(DEFAULT_CENTER, DEFAULT_ZOOM);
 
