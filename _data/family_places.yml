@@ -17,8 +17,8 @@
 
 - id: tam_son_nhut
   name: Tam Son Nhut, Vietnam
-  lat: 10.8500
-  lng: 106.7833
+  lat: 10.818889
+  lng: 106.651944
 
 - id: sa_dec
   name: Sa Dec, Vietnam
@@ -36,7 +36,7 @@
   lng: 106.6114
 
 - id: u_tapao
-  name: U Tapao, Thailand
+  name: U-Tapao Air Force Base, Thailand
   lat: 12.6799
   lng: 101.005
 

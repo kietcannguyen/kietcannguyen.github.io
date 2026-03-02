@@ -284,26 +284,62 @@
       return;
     }
 
-    var prev = L.latLng(finalSegment[finalSegment.length - 2]);
-    var tip = L.latLng(finalSegment[finalSegment.length - 1]);
-    var prevPx = map.latLngToLayerPoint(prev);
-    var tipPx = map.latLngToLayerPoint(tip);
-    var angleDeg = Math.atan2(tipPx.y - prevPx.y, tipPx.x - prevPx.x) * (180 / Math.PI);
+    if (L.polylineDecorator && L.Symbol && L.Symbol.arrowHead) {
+      L.polylineDecorator(finalSegment, {
+        patterns: [{
+          offset: "100%",
+          repeat: 0,
+          symbol: L.Symbol.arrowHead({
+            pixelSize: 14,
+            headAngle: 62,
+            polygon: true,
+            pathOptions: {
+              color: color,
+              weight: 1.5,
+              opacity: 0.98,
+              fillColor: color,
+              fillOpacity: 0.98
+            }
+          })
+        }]
+      }).addTo(map);
+      return;
+    }
 
-    var arrowHtml =
-      "<svg class=\"family-route-arrow-svg\" viewBox=\"0 0 20 20\" aria-hidden=\"true\" " +
-      "style=\"transform: rotate(" + angleDeg.toFixed(2) + "deg);\">" +
-      "<path d=\"M2 10 L17 10 M11.5 5.5 L17 10 L11.5 14.5\" " +
-      "stroke=\"" + escapeHtml(color) + "\" stroke-width=\"2.4\" stroke-linecap=\"round\" " +
-      "stroke-linejoin=\"round\" fill=\"none\"></path></svg>";
+    // Fallback if decorator plugin fails to load.
+    var prev = finalSegment[finalSegment.length - 2];
+    var tip = finalSegment[finalSegment.length - 1];
+    var vx = tip[1] - prev[1];
+    var vy = tip[0] - prev[0];
+    var len = Math.sqrt(vx * vx + vy * vy);
+    if (len === 0) {
+      return;
+    }
 
-    L.marker(tip, {
-      icon: L.divIcon({
-        className: "family-route-arrow-wrapper",
-        html: arrowHtml,
-        iconSize: [20, 20],
-        iconAnchor: [10, 10]
-      }),
+    var backX = -vx / len;
+    var backY = -vy / len;
+    var spread = 0.55;
+    var wingLen = clamp(len * 7, 0.8, 3.4);
+
+    var leftX = backX * Math.cos(spread) - backY * Math.sin(spread);
+    var leftY = backX * Math.sin(spread) + backY * Math.cos(spread);
+    var rightX = backX * Math.cos(-spread) - backY * Math.sin(-spread);
+    var rightY = backX * Math.sin(-spread) + backY * Math.cos(-spread);
+
+    var leftWing = [tip[0] + leftY * wingLen, tip[1] + leftX * wingLen];
+    var rightWing = [tip[0] + rightY * wingLen, tip[1] + rightX * wingLen];
+
+    L.polyline([tip, leftWing], {
+      color: color,
+      weight: 2.2,
+      opacity: 0.95,
+      interactive: false
+    }).addTo(map);
+
+    L.polyline([tip, rightWing], {
+      color: color,
+      weight: 2.2,
+      opacity: 0.95,
       interactive: false
     }).addTo(map);
   }
