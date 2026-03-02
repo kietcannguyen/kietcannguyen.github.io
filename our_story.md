@@ -1,7 +1,7 @@
 ---
 layout: page
 title: Our Story
-permalink: /story/
+permalink: /
 ---
 
 ## Goodbye Vietnam War Story 1975
