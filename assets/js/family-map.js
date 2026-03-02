@@ -215,7 +215,7 @@
     lng2 = shortestLngPath(lng1, lng2);
 
     var distanceKm = haversineKm({ lat: lat1, lng: lng1 }, { lat: lat2, lng: lng2 });
-    var pointCount = clamp(Math.round(distanceKm / 130), 24, 120);
+    var pointCount = clamp(Math.round(distanceKm / 75), 64, 260);
 
     var dx = lng2 - lng1;
     var dy = lat2 - lat1;
@@ -225,8 +225,8 @@
     var ny = dx / length;
     var averageLat = (lat1 + lat2) / 2;
 
-    var curvature = clamp(distanceKm / 900, 2.6, 15.5);
-    curvature *= 0.42 + 0.58 * Math.cos(toRadians(clamp(Math.abs(averageLat), 0, 75)));
+    var curvature = clamp(distanceKm / 2400, 0.45, 3.4);
+    curvature *= 0.78 + 0.22 * Math.cos(toRadians(clamp(Math.abs(averageLat), 0, 75)));
 
     var direction = dx >= 0 ? 1 : -1;
     if (averageLat < 0) {
@@ -298,12 +298,12 @@
           offset: "100%",
           repeat: 0,
           symbol: L.Symbol.arrowHead({
-            pixelSize: 14,
-            headAngle: 62,
+            pixelSize: 6,
+            headAngle: 52,
             polygon: true,
             pathOptions: {
               color: color,
-              weight: 1.5,
+              weight: 1.0,
               opacity: 0.98,
               fillColor: color,
               fillOpacity: 0.98
@@ -327,7 +327,7 @@
     var backX = -vx / len;
     var backY = -vy / len;
     var spread = 0.55;
-    var wingLen = clamp(len * 7, 0.8, 3.4);
+    var wingLen = clamp(len * 4, 0.25, 1.1);
 
     var leftX = backX * Math.cos(spread) - backY * Math.sin(spread);
     var leftY = backX * Math.sin(spread) + backY * Math.cos(spread);
@@ -339,14 +339,14 @@
 
     L.polyline([tip, leftWing], {
       color: color,
-      weight: 2.2,
+      weight: 1.4,
       opacity: 0.95,
       interactive: false
     }).addTo(map);
 
     L.polyline([tip, rightWing], {
       color: color,
-      weight: 2.2,
+      weight: 1.4,
       opacity: 0.95,
       interactive: false
     }).addTo(map);
@@ -415,9 +415,9 @@
       arcData.segments.forEach(function (segment) {
         L.polyline(segment, {
           color: routeColor,
-          opacity: 0.86,
-          weight: 2.4,
-          smoothFactor: 1,
+          opacity: 0.84,
+          weight: 1.9,
+          smoothFactor: 2.2,
           lineCap: "round",
           lineJoin: "round",
           interactive: false
