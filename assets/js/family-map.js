@@ -73,10 +73,14 @@
   function buildPeopleById(people) {
     var peopleById = {};
     people.forEach(function (person) {
-      if (!person || typeof person.id !== "string") {
+      if (!person || person.id === undefined || person.id === null) {
         return;
       }
-      peopleById[person.id] = person;
+      var personId = String(person.id).trim();
+      if (personId === "") {
+        return;
+      }
+      peopleById[personId] = person;
     });
     return peopleById;
   }
@@ -84,10 +88,14 @@
   function buildPlacesById(places) {
     var placesById = {};
     places.forEach(function (place) {
-      if (!place || typeof place.id !== "string") {
+      if (!place || place.id === undefined || place.id === null) {
         return;
       }
-      placesById[place.id] = place;
+      var placeId = String(place.id).trim();
+      if (placeId === "") {
+        return;
+      }
+      placesById[placeId] = place;
     });
     return placesById;
   }
@@ -377,21 +385,22 @@
     var placesById = buildPlacesById(places);
     var peopleById = buildPeopleById(people);
 
-    moves.forEach(function (move) {
-      if (!move || typeof move.id !== "string") {
-        console.warn("[family-map] Skipping move with missing id.", move);
+    moves.forEach(function (move, index) {
+      if (!move || typeof move !== "object") {
+        console.warn("[family-map] Skipping invalid move entry.", move);
         return;
       }
+      var moveId = move.id === undefined || move.id === null ? ("index_" + index) : String(move.id);
 
-      var fromPlace = placesById[move.from];
-      var toPlace = placesById[move.to];
+      var fromPlace = placesById[String(move.from)];
+      var toPlace = placesById[String(move.to)];
       if (!fromPlace || !toPlace) {
-        console.warn("[family-map] Skipping move with unknown place references:", move.id);
+        console.warn("[family-map] Skipping move with unknown place references:", moveId);
         return;
       }
 
       var peopleIds = Array.isArray(move.people) ? move.people : [];
-      var primaryPerson = peopleIds.length > 0 ? peopleById[peopleIds[0]] : null;
+      var primaryPerson = peopleIds.length > 0 ? peopleById[String(peopleIds[0])] : null;
       var routeColor = primaryPerson && typeof primaryPerson.color === "string"
         ? primaryPerson.color
         : DEFAULT_ROUTE_COLOR;
@@ -399,7 +408,7 @@
       // Shared move color rule: first person in move.people defines route color.
       var arcData = makeArcLatLngs(fromPlace, toPlace);
       if (!arcData) {
-        console.warn("[family-map] Could not compute arc for move:", move.id);
+        console.warn("[family-map] Could not compute arc for move:", moveId);
         return;
       }
 
