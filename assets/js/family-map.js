@@ -284,16 +284,16 @@
 
   function addArrowHeads(map, arcData, color) {
     if (!arcData || !Array.isArray(arcData.segments) || arcData.segments.length === 0) {
-      return;
+      return null;
     }
 
     var finalSegment = arcData.segments[arcData.segments.length - 1];
     if (finalSegment.length < 2) {
-      return;
+      return null;
     }
 
     if (L.polylineDecorator && L.Symbol && L.Symbol.arrowHead) {
-      L.polylineDecorator(finalSegment, {
+      var decoratorLayer = L.polylineDecorator(finalSegment, {
         patterns: [{
           offset: "100%",
           repeat: 0,
@@ -306,12 +306,13 @@
               weight: 1.0,
               opacity: 0.98,
               fillColor: color,
-              fillOpacity: 0.98
+              fillOpacity: 0.98,
+              interactive: true
             }
           })
         }]
       }).addTo(map);
-      return;
+      return decoratorLayer;
     }
 
     // Fallback if decorator plugin fails to load.
@@ -321,7 +322,7 @@
     var vy = tip[0] - prev[0];
     var len = Math.sqrt(vx * vx + vy * vy);
     if (len === 0) {
-      return;
+      return null;
     }
 
     var backX = -vx / len;
@@ -337,43 +338,85 @@
     var leftWing = [tip[0] + leftY * wingLen, tip[1] + leftX * wingLen];
     var rightWing = [tip[0] + rightY * wingLen, tip[1] + rightX * wingLen];
 
-    L.polyline([tip, leftWing], {
+    var leftLayer = L.polyline([tip, leftWing], {
       color: color,
       weight: 1.4,
       opacity: 0.95,
-      interactive: false
+      interactive: true
     }).addTo(map);
 
-    L.polyline([tip, rightWing], {
+    var rightLayer = L.polyline([tip, rightWing], {
       color: color,
       weight: 1.4,
       opacity: 0.95,
-      interactive: false
+      interactive: true
     }).addTo(map);
+
+    return L.featureGroup([leftLayer, rightLayer]);
   }
 
-  function addRouteLabel(map, arcData, dateText, color) {
-    if (!arcData || !Array.isArray(arcData.midpoint) || typeof dateText !== "string") {
+  function getMoveDetailsHtml(move, peopleById) {
+    var dateText = move && move.date ? String(move.date) : "Unknown date";
+    var peopleIds = move && Array.isArray(move.people) ? move.people : [];
+    var peopleNames = peopleIds.map(function (personId) {
+      var person = peopleById[String(personId)];
+      if (person && typeof person.name === "string" && person.name.trim() !== "") {
+        return person.name.trim();
+      }
+      return String(personId);
+    });
+    var peopleText = peopleNames.length > 0 ? peopleNames.join(", ") : "Unknown";
+    var noteText = move && move.note ? String(move.note) : "No description";
+
+    return "<div class=\"family-route-details\">" +
+      "<div><strong>Date:</strong> " + escapeHtml(dateText) + "</div>" +
+      "<div><strong>People:</strong> " + escapeHtml(peopleText) + "</div>" +
+      "<div><strong>Description:</strong> " + escapeHtml(noteText) + "</div>" +
+      "</div>";
+  }
+
+  function bindMoveDetails(layer, detailsHtml) {
+    if (!layer || !detailsHtml) {
       return;
     }
 
-    var normal = Array.isArray(arcData.normal) ? arcData.normal : [0, 1];
-    var offset = clamp((arcData.distanceKm || 0) / 6500, 0.45, 1.2);
-    var labelLat = arcData.midpoint[0] + normal[1] * offset;
-    var labelLng = normalizeLng(arcData.midpoint[1] + normal[0] * offset);
-    var chipHtml = "<span class=\"family-route-label-chip\" style=\"border-color:" +
-      escapeHtml(color) + ";\">" + escapeHtml(dateText) + "</span>";
+    var layers = [];
+    if (typeof layer.eachLayer === "function") {
+      layer.eachLayer(function (innerLayer) {
+        layers.push(innerLayer);
+      });
+    }
+    if (layers.length === 0) {
+      layers.push(layer);
+    }
 
-    L.marker([labelLat, labelLng], {
-      icon: L.divIcon({
-        className: "family-route-label",
-        html: chipHtml,
-        iconSize: [0, 0],
-        iconAnchor: [0, 0]
-      }),
-      interactive: false,
-      keyboard: false
-    }).addTo(map);
+    layers.forEach(function (entry) {
+      if (typeof entry.bindTooltip === "function") {
+        entry.bindTooltip(detailsHtml, {
+          sticky: true,
+          direction: "top",
+          opacity: 0.98,
+          className: "family-route-tooltip"
+        });
+      }
+
+      if (typeof entry.bindPopup === "function") {
+        entry.bindPopup(detailsHtml, {
+          className: "family-route-popup",
+          autoPan: true,
+          closeButton: true
+        });
+      }
+    });
+  }
+
+  function disableStaticRouteLabels() {
+    // Intentionally kept as a no-op placeholder for backwards compatibility.
+    // Route dates are now shown via hover/click tooltip/popup only.
+  }
+
+  function addRouteLabel(map, arcData, dateText, color) {
+    disableStaticRouteLabels();
   }
 
   function renderMoves(map, moves, places, people) {
@@ -411,21 +454,23 @@
         console.warn("[family-map] Could not compute arc for move:", moveId);
         return;
       }
+      var moveDetailsHtml = getMoveDetailsHtml(move, peopleById);
 
       arcData.segments.forEach(function (segment) {
-        L.polyline(segment, {
+        var segmentLayer = L.polyline(segment, {
           color: routeColor,
           opacity: 0.84,
           weight: 1.9,
           smoothFactor: 2.2,
           lineCap: "round",
           lineJoin: "round",
-          interactive: false
+          interactive: true
         }).addTo(map);
+        bindMoveDetails(segmentLayer, moveDetailsHtml);
       });
 
-      addArrowHeads(map, arcData, routeColor);
-      addRouteLabel(map, arcData, String(move.date || ""), routeColor);
+      var arrowLayer = addArrowHeads(map, arcData, routeColor);
+      bindMoveDetails(arrowLayer, moveDetailsHtml);
     });
   }
 
@@ -489,6 +534,7 @@
     renderMoves: renderMoves,
     makeArcLatLngs: makeArcLatLngs,
     addArrowHeads: addArrowHeads,
-    addRouteLabel: addRouteLabel
+    addRouteLabel: addRouteLabel,
+    getMoveDetailsHtml: getMoveDetailsHtml
   };
 })();
