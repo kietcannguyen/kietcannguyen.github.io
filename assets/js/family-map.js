@@ -355,6 +355,32 @@
     return L.featureGroup([leftLayer, rightLayer]);
   }
 
+  function getRouteStrokeWeight(zoom) {
+    return clamp(1.2 + (zoom - 2) * 0.28, 1.2, 4.8);
+  }
+
+  function getRouteHitWeight(zoom) {
+    return clamp(getRouteStrokeWeight(zoom) + 9.5, 9.5, 17);
+  }
+
+  function updateRouteLayerSizes(map, strokeLayers, hitLayers) {
+    var zoom = map.getZoom();
+    var strokeWeight = getRouteStrokeWeight(zoom);
+    var hitWeight = getRouteHitWeight(zoom);
+
+    strokeLayers.forEach(function (layer) {
+      if (layer && typeof layer.setStyle === "function") {
+        layer.setStyle({ weight: strokeWeight });
+      }
+    });
+
+    hitLayers.forEach(function (layer) {
+      if (layer && typeof layer.setStyle === "function") {
+        layer.setStyle({ weight: hitWeight });
+      }
+    });
+  }
+
   function getMoveDetailsHtml(move, peopleById) {
     var dateText = move && move.date ? String(move.date) : "Unknown date";
     var peopleIds = move && Array.isArray(move.people) ? move.people : [];
@@ -365,12 +391,14 @@
       }
       return String(personId);
     });
-    var peopleText = peopleNames.length > 0 ? peopleNames.join(", ") : "Unknown";
+    var peopleLinesHtml = peopleNames.length > 0
+      ? peopleNames.map(function (name) { return escapeHtml(name); }).join("<br>")
+      : "Unknown";
     var noteText = move && move.note ? String(move.note) : "No description";
 
     return "<div class=\"family-route-details\">" +
       "<div><strong>Date:</strong> " + escapeHtml(dateText) + "</div>" +
-      "<div><strong>People:</strong> " + escapeHtml(peopleText) + "</div>" +
+      "<div><strong>People:</strong><div class=\"family-route-people-lines\">" + peopleLinesHtml + "</div></div>" +
       "<div><strong>Description:</strong> " + escapeHtml(noteText) + "</div>" +
       "</div>";
   }
@@ -427,6 +455,8 @@
 
     var placesById = buildPlacesById(places);
     var peopleById = buildPeopleById(people);
+    var strokeLayers = [];
+    var hitLayers = [];
 
     moves.forEach(function (move, index) {
       if (!move || typeof move !== "object") {
@@ -455,22 +485,41 @@
         return;
       }
       var moveDetailsHtml = getMoveDetailsHtml(move, peopleById);
+      var routeStrokeWeight = getRouteStrokeWeight(map.getZoom());
+      var routeHitWeight = getRouteHitWeight(map.getZoom());
 
       arcData.segments.forEach(function (segment) {
-        var segmentLayer = L.polyline(segment, {
+        var segmentStrokeLayer = L.polyline(segment, {
           color: routeColor,
           opacity: 0.84,
-          weight: 1.9,
+          weight: routeStrokeWeight,
+          smoothFactor: 2.2,
+          lineCap: "round",
+          lineJoin: "round",
+          interactive: false
+        }).addTo(map);
+        strokeLayers.push(segmentStrokeLayer);
+
+        var segmentHitLayer = L.polyline(segment, {
+          color: routeColor,
+          opacity: 0.01,
+          weight: routeHitWeight,
           smoothFactor: 2.2,
           lineCap: "round",
           lineJoin: "round",
           interactive: true
         }).addTo(map);
-        bindMoveDetails(segmentLayer, moveDetailsHtml);
+        hitLayers.push(segmentHitLayer);
+        bindMoveDetails(segmentHitLayer, moveDetailsHtml);
       });
 
       var arrowLayer = addArrowHeads(map, arcData, routeColor);
       bindMoveDetails(arrowLayer, moveDetailsHtml);
+    });
+
+    updateRouteLayerSizes(map, strokeLayers, hitLayers);
+    map.on("zoomend", function () {
+      updateRouteLayerSizes(map, strokeLayers, hitLayers);
     });
   }
 

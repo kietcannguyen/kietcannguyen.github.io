@@ -163,11 +163,16 @@
   font-family: Georgia, "Times New Roman", Times, serif;
   font-size: 0.8rem;
   line-height: 1.35;
+  max-width: 320px;
 }
 
 .family-route-details strong {
   color: #2d261d;
   font-weight: 600;
+}
+
+.family-route-people-lines {
+  margin-top: 0.12rem;
 }
 
 .leaflet-tooltip.family-route-tooltip {
