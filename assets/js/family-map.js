@@ -290,15 +290,19 @@
     var tipPx = map.latLngToLayerPoint(tip);
     var angleDeg = Math.atan2(tipPx.y - prevPx.y, tipPx.x - prevPx.x) * (180 / Math.PI);
 
-    var arrowHtml = "<span class=\"family-route-arrow\" style=\"border-left-color:" +
-      escapeHtml(color) + "; transform: rotate(" + angleDeg.toFixed(2) + "deg);\"></span>";
+    var arrowHtml =
+      "<svg class=\"family-route-arrow-svg\" viewBox=\"0 0 20 20\" aria-hidden=\"true\" " +
+      "style=\"transform: rotate(" + angleDeg.toFixed(2) + "deg);\">" +
+      "<path d=\"M2 10 L17 10 M11.5 5.5 L17 10 L11.5 14.5\" " +
+      "stroke=\"" + escapeHtml(color) + "\" stroke-width=\"2.4\" stroke-linecap=\"round\" " +
+      "stroke-linejoin=\"round\" fill=\"none\"></path></svg>";
 
     L.marker(tip, {
       icon: L.divIcon({
         className: "family-route-arrow-wrapper",
         html: arrowHtml,
-        iconSize: [16, 16],
-        iconAnchor: [8, 8]
+        iconSize: [20, 20],
+        iconAnchor: [10, 10]
       }),
       interactive: false
     }).addTo(map);
@@ -394,6 +398,8 @@
 
     var map = L.map(MAP_ELEMENT_ID, {
       zoomControl: true,
+      maxBounds: [[-85, -180], [85, 180]],
+      maxBoundsViscosity: 1.0,
       worldCopyJump: false
     }).setView(DEFAULT_CENTER, DEFAULT_ZOOM);
 
@@ -401,6 +407,8 @@
       subdomains: "abcd",
       maxZoom: 18,
       minZoom: 2,
+      noWrap: true,
+      bounds: [[-85, -180], [85, 180]],
       attribution:
         "&copy; <a href=\"https://www.openstreetmap.org/copyright\">OpenStreetMap</a> " +
         "contributors &copy; <a href=\"https://carto.com/attributions\">CARTO</a>"
