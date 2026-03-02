@@ -4,6 +4,7 @@
   var DEFAULT_ROUTE_COLOR = "#6b5b4a";
   var DEFAULT_CENTER = [20, 180];
   var DEFAULT_ZOOM = 2;
+  var PERSON_FILTER_ID = "family-person-filter";
   var MAP_ELEMENT_ID = "family-map";
   var LEGEND_ELEMENT_ID = "family-map-legend";
 
@@ -282,10 +283,11 @@
     };
   }
 
-  function addArrowHeads(map, arcData, color) {
+  function addArrowHeads(map, arcData, color, layerTarget) {
     if (!arcData || !Array.isArray(arcData.segments) || arcData.segments.length === 0) {
       return null;
     }
+    var target = layerTarget || map;
 
     var finalSegment = arcData.segments[arcData.segments.length - 1];
     if (finalSegment.length < 2) {
@@ -311,7 +313,7 @@
             }
           })
         }]
-      }).addTo(map);
+      }).addTo(target);
       return decoratorLayer;
     }
 
@@ -343,14 +345,14 @@
       weight: 1.4,
       opacity: 0.95,
       interactive: true
-    }).addTo(map);
+    }).addTo(target);
 
     var rightLayer = L.polyline([tip, rightWing], {
       color: color,
       weight: 1.4,
       opacity: 0.95,
       interactive: true
-    }).addTo(map);
+    }).addTo(target);
 
     return L.featureGroup([leftLayer, rightLayer]);
   }
@@ -462,11 +464,14 @@
     disableStaticRouteLabels();
   }
 
-  function renderMoves(map, moves, places, people) {
+  function renderMoves(map, moves, places, people, options) {
     if (!Array.isArray(moves)) {
       console.error("[family-map] renderMoves() expected an array.");
-      return;
+      return { strokeLayers: [], hitLayers: [] };
     }
+    var renderOptions = options || {};
+    var targetLayer = renderOptions.targetLayer || map;
+    var selectedPersonId = renderOptions.selectedPersonId ? String(renderOptions.selectedPersonId) : "";
 
     var placesById = buildPlacesById(places);
     var peopleById = buildPeopleById(people);
@@ -488,10 +493,17 @@
       }
 
       var peopleIds = Array.isArray(move.people) ? move.people : [];
+      if (selectedPersonId !== "" && peopleIds.map(String).indexOf(selectedPersonId) === -1) {
+        return;
+      }
       var primaryPerson = peopleIds.length > 0 ? peopleById[String(peopleIds[0])] : null;
-      var routeColor = primaryPerson && typeof primaryPerson.color === "string"
-        ? primaryPerson.color
-        : DEFAULT_ROUTE_COLOR;
+      var selectedPerson = selectedPersonId !== "" ? peopleById[selectedPersonId] : null;
+      var routeColor = DEFAULT_ROUTE_COLOR;
+      if (selectedPerson && typeof selectedPerson.color === "string") {
+        routeColor = selectedPerson.color;
+      } else if (primaryPerson && typeof primaryPerson.color === "string") {
+        routeColor = primaryPerson.color;
+      }
 
       // Shared move color rule: first person in move.people defines route color.
       var arcData = makeArcLatLngs(fromPlace, toPlace);
@@ -512,7 +524,7 @@
           lineCap: "round",
           lineJoin: "round",
           interactive: false
-        }).addTo(map);
+        }).addTo(targetLayer);
         strokeLayers.push(segmentStrokeLayer);
 
         var segmentHitLayer = L.polyline(segment, {
@@ -523,18 +535,49 @@
           lineCap: "round",
           lineJoin: "round",
           interactive: true
-        }).addTo(map);
+        }).addTo(targetLayer);
         hitLayers.push(segmentHitLayer);
         bindMoveDetails(segmentHitLayer, moveDetailsHtml);
       });
 
-      var arrowLayer = addArrowHeads(map, arcData, routeColor);
+      var arrowLayer = addArrowHeads(map, arcData, routeColor, targetLayer);
       bindMoveDetails(arrowLayer, moveDetailsHtml);
     });
+    return {
+      strokeLayers: strokeLayers,
+      hitLayers: hitLayers
+    };
+  }
 
-    updateRouteLayerSizes(map, strokeLayers, hitLayers);
-    map.on("zoomend", function () {
-      updateRouteLayerSizes(map, strokeLayers, hitLayers);
+  function setupPersonFilter(people, onChange) {
+    var selectEl = document.getElementById(PERSON_FILTER_ID);
+    if (!selectEl) {
+      console.warn("[family-map] Person filter control not found.");
+      return;
+    }
+
+    selectEl.innerHTML = "";
+    var allOption = document.createElement("option");
+    allOption.value = "";
+    allOption.textContent = "All People";
+    selectEl.appendChild(allOption);
+
+    if (Array.isArray(people)) {
+      people.forEach(function (person) {
+        if (!person || person.id === undefined || person.id === null || typeof person.name !== "string") {
+          return;
+        }
+        var optionEl = document.createElement("option");
+        optionEl.value = String(person.id);
+        optionEl.textContent = person.name;
+        selectEl.appendChild(optionEl);
+      });
+    }
+
+    selectEl.addEventListener("change", function () {
+      if (typeof onChange === "function") {
+        onChange(String(selectEl.value || ""));
+      }
     });
   }
 
@@ -570,7 +613,29 @@
     renderLegend(data.people);
 
     var placePoints = renderPlaces(map, data.places);
-    renderMoves(map, data.moves, data.places, data.people);
+    var moveLayerGroup = L.layerGroup().addTo(map);
+    var routeLayerState = { strokeLayers: [], hitLayers: [] };
+    var selectedPersonId = "";
+
+    function redrawMoves() {
+      moveLayerGroup.clearLayers();
+      routeLayerState = renderMoves(map, data.moves, data.places, data.people, {
+        targetLayer: moveLayerGroup,
+        selectedPersonId: selectedPersonId
+      });
+      updateRouteLayerSizes(map, routeLayerState.strokeLayers, routeLayerState.hitLayers);
+    }
+
+    setupPersonFilter(data.people, function (nextPersonId) {
+      selectedPersonId = nextPersonId;
+      redrawMoves();
+    });
+
+    redrawMoves();
+
+    map.on("zoomend", function () {
+      updateRouteLayerSizes(map, routeLayerState.strokeLayers, routeLayerState.hitLayers);
+    });
 
     if (placePoints.length > 0) {
       var bounds = L.latLngBounds(placePoints);
@@ -599,6 +664,7 @@
     makeArcLatLngs: makeArcLatLngs,
     addArrowHeads: addArrowHeads,
     addRouteLabel: addRouteLabel,
-    getMoveDetailsHtml: getMoveDetailsHtml
+    getMoveDetailsHtml: getMoveDetailsHtml,
+    setupPersonFilter: setupPersonFilter
   };
 })();
