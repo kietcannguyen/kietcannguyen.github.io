@@ -1,0 +1,20 @@
+<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css">
+<link rel="stylesheet" href="{{ '/assets/css/family-map.css' | relative_url }}">
+
+<section class="family-map-block" aria-label="Family Migration Atlas">
+  <h2 class="family-map-title">Family Migration Atlas</h2>
+  <div class="family-map-shell">
+    <div id="family-map" class="family-map-canvas" role="img" aria-label="Family migration routes map"></div>
+    <aside id="family-map-legend" class="family-map-legend" aria-label="People legend"></aside>
+  </div>
+</section>
+
+<script>
+  window.FAMILY_MAP_DATA = {
+    people: {{ site.data.family_people | jsonify }},
+    places: {{ site.data.family_places | jsonify }},
+    moves: {{ site.data.family_moves | jsonify }}
+  };
+</script>
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+<script src="{{ '/assets/js/family-map.js' | relative_url }}"></script>

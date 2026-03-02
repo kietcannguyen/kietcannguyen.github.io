@@ -1,0 +1,91 @@
+# EDIT THIS FILE: add all city locations used by moves.
+# id must be unique; lat/lng are decimal coordinates.
+- id: saigon
+  name: Saigon, Vietnam
+  lat: 10.8231
+  lng: 106.6297
+
+- id: guam
+  name: Hagatna, Guam
+  lat: 13.4757
+  lng: 144.7489
+
+- id: bien_hoa
+  name: Bien Hoa, Vietnam
+  lat: 10.9528
+  lng: 106.8147
+
+- id: tam_son_nhut
+  name: Tam Son Nhut, Vietnam
+  lat: 10.8500
+  lng: 106.7833
+
+- id: sa_dec
+  name: Sa Dec, Vietnam
+  lat: 10.3500
+  lng: 106.7500
+
+- id: mekong_delta
+  name: Mekong Delta, Vietnam
+  lat: 10.0634
+  lng: 106.5943
+
+- id: con_son_island
+  name: Con Son Island, Vietnam
+  lat: 8.7009
+  lng: 106.6114
+
+- id: u_tapao
+  name: U Tapao, Thailand
+  lat: 12.6799
+  lng: 101.005
+
+- id: cam_ranh_bay
+  name: Cam Ranh Bay, Vietnam
+  lat: 11.9000
+  lng: 109.2000
+
+- id: nha_trang
+  name: Nha Trang, Vietnam
+  lat: 12.2388
+  lng: 109.1967
+
+- id: da_nang
+  name: Da Nang, Vietnam
+  lat: 16.0544
+  lng: 108.2022
+
+- id: subic_bay
+  name: Subic Bay, Philippines
+  lat: 14.7942
+  lng: 120.2719
+
+- id: darwin
+  name: Darwin, Australia
+  lat: -12.4634
+  lng: 130.8456
+
+- id: melborne
+  name: Melbourne, Australia
+  lat: -37.8136
+  lng: 144.9631
+
+- id: faith_church
+  name: Faith Lutheran Church, Minnesota, USA
+  lat: 45.240048
+  lng: -94.943040
+
+- id: svea_church  
+  name: Svea Lutheran Church, Minnesota, USA
+  lat: 45.240048
+  lng: -94.943040
+
+- id: minneapolis
+  name: Minneapolis, Minnesota, USA
+  lat: 44.9778
+  lng: -93.2650
+
+- id: fort_chafee
+  name: Fort Chafee, Arkansas, USA
+  lat: 35.3167
+  lng: -94.3167

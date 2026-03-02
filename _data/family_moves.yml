@@ -1,0 +1,198 @@
+# EDIT THIS FILE: add moves in story order (oldest to newest).
+# from/to must reference place ids in _data/family_places.yml
+# people must reference person ids in _data/family_people.yml
+# Shared move color rule: if multiple people are listed, the first person id sets route color.
+- id: 1975_03_28
+  from: da_nang
+  to: nha_trang
+  date: "1975-03-28"
+  people:
+    - tho
+  note: Leaving Air Force base in Da Nang, Vietnam, for Nha Trang, Vietnam.
+
+- id: 1975_03_29
+  from: nha_trang
+  to: tam_son_nhut
+  date: "1975-03-29"
+  people:
+    - tho
+  note: Leaving Nha Trang, Vietnam, for Tam Son Nhut, Vietnam.
+
+- id: 1975_03_30
+  from: nha_trang
+  to: saigon
+  date: "1975-03-30"
+  people:
+    - hoi
+    - hung
+    - nong
+    - vuong
+    - tram_anh
+    - doan
+    - duan
+    - phuong
+    - thuy
+    - an
+    - trang
+    - dung
+    - ngoc
+    - sang
+  note: Leaving Nha Trang, Vietnam, for Saigon, Vietnam.
+
+- id: 1975_04_28
+  from: saigon
+  to: con_son_island
+  date: "1975-04-28"
+  people:
+    - hoi
+    - hung
+    - vuong
+    - tram_anh
+    - duan
+    - phuong
+    - thuy
+    - an
+    - dung
+    - ngoc
+  note: Leaving Saigon, Vietnam, for Con Son Island, Vietnam.
+
+- id: 1975_04_29
+  from: saigon
+  to: u_tapao
+  date: "1975-04-29"
+  people:
+    - tho
+    - nong
+    - sang
+    - trang
+    - doan
+  note: Leaving Saigon, Vietnam, for U Tapao Air Force base, Thailand.
+
+- id: 1975_04_29
+  from: u_tapao
+  to: guam
+  date: "1975-04-29"
+  people:
+    - tho
+    - nong
+    - sang
+    - trang
+    - doan
+  note: Leaving U Tapao Air Force base, Thailand, for Guam.
+
+- id: 1975_05_01
+  from: con_son_island
+  to: subic_bay
+  date: "1975-05-01"
+  people:
+    - hoi
+    - hung
+    - vuong
+    - tram_anh
+    - duan
+    - phuong
+    - thuy
+    - an
+    - dung
+    - ngoc
+  note: Leaving Con Son Island, Vietnam, for Subic Bay, Philippines.
+
+- id: 1975_05_15
+  from: subic_bay
+  to: guam
+  date: "1975-05-15"
+  people:
+    - hoi
+    - hung
+    - vuong
+    - tram_anh
+    - duan
+    - phuong
+    - thuy
+    - an
+    - dung
+    - ngoc
+  note: Leaving Subic Bay, Philippines, for Guam.
+
+- id: 1975_05_30
+  from: guam
+  to: fort_chafee
+  date: "1975-05-30"
+  people:
+    - hoi
+    - hung
+    - vuong
+    - tram_anh
+    - duan
+    - phuong
+    - thuy
+    - an
+    - trang
+    - dung
+    - ngoc
+    - tho
+    - nong
+    - sang
+    - doan
+  note: Leaving Guam, Philippines, for Fort Chafee, Arkansas, USA.
+
+- id: 1975_07_01
+  from: fort_chafee
+  to: svea_church
+  date: "1975-07-01"
+  people:
+    - thuy
+    - an
+    - tho
+  note: Leaving Fort Chafee, Arkansas, USA, for Svea Lutheran Church, Minnesota, USA.
+
+- id: 1975_07_01
+  from: fort_chafee
+  to: faith_church
+  date: "1975-07-01"
+  people:
+    - hoi
+    - hung
+    - vuong
+    - tram_anh
+    - duan
+    - phuong
+    - trang
+    - dung
+    - ngoc
+    - nong
+    - sang
+    - doan
+  note: Leaving Fort Chafee, Arkansas, USA, for Faith Lutheran Church, Minnesota, USA.
+
+- id: 1979_11_01
+  from: saigon
+  to: sa_dec
+  date: "1979-11-01"
+  people:
+    - son
+  note: Leaving Saigon, Vietnam, for Sa Dec, Vietnam.
+
+- id: 1979_11_02
+  from: sa_dec
+  to: darwin
+  date: "1979-11-02"
+  people:
+    - son
+  note: Leaving Sa Dec, Vietnam, for Darwin, Australia.
+
+- id: 1980_01_01
+  from: darwin
+  to: melborne
+  date: "1980-01-01"
+  people:
+    - son
+  note: Leaving Darwin, Australia, for Melbourne, Australia.
+
+- id: 1980_06_30
+  from: melborne
+  to: faith_church
+  date: "1980-06-30"
+  people:
+    - son
+  note: Leaving Melbourne, Australia, for Faith Lutheran Church, Minnesota, USA.

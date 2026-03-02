@@ -32,6 +32,7 @@ plugins:
 # in order as they should show up.
 header_pages:
   - our_story.md
+  - family-map.md
   - images.md
   - about.md
 

@@ -1,0 +1,65 @@
+# EDIT THIS FILE: add every person who appears in moves.
+# id must be unique; color should be a hex value used for routes and legend.
+- id: an
+  name: Nguyen Thi Quang An
+  color: "#ff3b30"
+
+- id: hoi
+  name: Dinh Xuan Hoi
+  color: "#00a8e8"
+
+- id: hung
+  name: Tran Thi Hung
+  color: "#ff6b00"
+
+- id: nong
+  name: Trinh Van Nong
+  color: "#8a2be2"
+
+- id: vuong
+  name: Trinh Thi Vuong
+  color: "#00c853"
+
+- id: tram_anh
+  name: Trinh Thi Tram Anh
+  color: "#ff1493"
+
+- id: doan
+  name: Trinh Quoc Doan
+  color: "#00bfa5"
+
+- id: duan
+  name: Trinh Quoc Duan
+  color: "#f50057"
+
+- id: phuong
+  name: Dinh Thi Phuong
+  color: "#1e88e5"
+
+- id: son
+  name: Dinh Bat Son
+  color: "#c51162"
+
+- id: tho
+  name: Nguyen Tho
+  color: "#ffd600"
+
+- id: thuy
+  name: Nguyen Thi Thanh Thuy
+  color: "#651fff"
+
+- id: trang
+  name: Dinh Thi Doan Trang
+  color: "#00e5ff"
+
+- id: dung
+  name: Dinh Thi Kim Dung
+  color: "#ff4081"
+
+- id: ngoc
+  name: Trinh Thi Ngoc
+  color: "#76ff03"
+
+- id: sang
+  name: Ho Dinh Sang
+  color: "#ff9100"

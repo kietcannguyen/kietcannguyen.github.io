@@ -46,7 +46,7 @@ Thank you Tram Anh, Duan, and Kim for being my support and capturing the stories
 | March 30 | Hoi, Hung, Nong, Vuong, Tram Anh, Doan, Duan, Phuong, Thuy, An, Trang, Dung, Ngoc, and Sang leaves Nha Trang.           |
 | March 31 | Family reunited in Saigon and stayed with Son.                                                                          |
 | April 28 | Family leaves Saigon except for Nong, Sang, Tho, and Son. Trang and Doan left behind from their flight.                 |
-| March 29 | Hoi, Hung, Nong, Vuong, Tram Anh, Duan, Phuong, Thuy, An, Dung, and Ngoc arrived at Con Son Island. Nong, Sang, Tho, Trang, and Doan left Saigon. Traveled to Thailand US Air Force base U-Tapao and transferred to Guam refugee camp.                                                                                                                |
+| April 29 | Hoi, Hung, Nong, Vuong, Tram Anh, Duan, Phuong, Thuy, An, Dung, and Ngoc arrived at Con Son Island. Nong, Sang, Tho, Trang, and Doan left Saigon. Traveled to Thailand US Air Force base U-Tapao and transferred to Guam refugee camp.                                                                                                                |
 
 ### Journey to United States
 
